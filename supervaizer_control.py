@@ -34,28 +34,26 @@ DEV_PUBLIC_URL = "https://myagent-dev.loca.lt"
 PROD_PUBLIC_URL = "https://myagent.cloud-hosting.net:8001"
 
 # Define the parameters and secrets expected by the agent
-agent_parameters: ParametersSetup | None = ParametersSetup.from_list(
-    [
-        Parameter(
-            name="OPEN_API_KEY",
-            description="OpenAPI Key",
-            is_environment=True,
-            is_secret=True,
-        ),
-        Parameter(
-            name="SERPER_API",
-            description="Server API key updated",
-            is_environment=True,
-            is_secret=True,
-        ),
-        Parameter(
-            name="COMPETITOR_SUMMARY_URL",
-            description="Competitor Summary URL",
-            is_environment=True,
-            is_secret=False,
-        ),
-    ]
-)
+agent_parameters: ParametersSetup | None = ParametersSetup.from_list([
+    Parameter(
+        name="OPEN_API_KEY",
+        description="OpenAPI Key",
+        is_environment=True,
+        is_secret=True,
+    ),
+    Parameter(
+        name="SERPER_API",
+        description="Server API key updated",
+        is_environment=True,
+        is_secret=True,
+    ),
+    Parameter(
+        name="COMPETITOR_SUMMARY_URL",
+        description="Competitor Summary URL",
+        is_environment=True,
+        is_secret=False,
+    ),
+])
 
 # Define the method used to start a job
 job_start_method: AgentMethod = AgentMethod(
@@ -187,10 +185,14 @@ account: Account = Account(
 sv_server: Server = Server(
     agents=[agent],
     a2a_endpoints=True,  # Enable A2A endpoints
-    supervisor_account=account,  # Account of the supervisor from Supervaize
+    # supervisor_account=account,  # Account of the supervisor from Supervaize
 )
+
+
+def start_server():
+    sv_server.launch(log_level="DEBUG")
 
 
 if __name__ == "__main__":
     # Start the supervaize server
-    sv_server.launch(log_level="DEBUG")
+    start_server()
