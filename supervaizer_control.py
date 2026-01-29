@@ -196,7 +196,3 @@ app = sv_server.app
 if __name__ == "__main__":
     # Start the supervaize server
     sv_server.launch(log_level="DEBUG", start_uvicorn=True)
-
-
-else:
-    sv_server.launch(start_uvicorn=False)
