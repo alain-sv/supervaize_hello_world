@@ -189,14 +189,14 @@ sv_server: Server = Server(
 )
 
 
-def start_server():
-    sv_server.launch(log_level="DEBUG")
-
-
 # Expose the FastAPI app instance for deployment
 app = sv_server.app
 
 
 if __name__ == "__main__":
     # Start the supervaize server
-    start_server()
+    sv_server.launch(log_level="DEBUG", start_uvicorn=True)
+
+
+else:
+    sv_server.launch(start_uvicorn=False)

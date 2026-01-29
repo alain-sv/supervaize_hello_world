@@ -127,6 +127,61 @@
             max-width: 600px;
         }
 
+        .api-section {
+            width: 100%;
+            max-width: 900px;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .api-section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.25rem;
+            background: none;
+            -webkit-text-fill-color: #ffffff;
+        }
+
+        .api-version {
+            font-size: 0.875rem;
+            color: #888888;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-links a {
+            margin-bottom: 0;
+        }
+
+        .api-urls {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #333333;
+        }
+
+        .api-urls p {
+            font-size: 0.8125rem;
+            color: #888888;
+            margin-bottom: 0.5rem;
+        }
+
+        .api-urls code {
+            font-size: 0.75rem;
+            color: #cccccc;
+            word-break: break-all;
+        }
+
+        .cards--single {
+            max-width: 100%;
+        }
+
         .cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -309,64 +364,31 @@
             </div>
         </div>
 
-        <h1 class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-            Supervaizer API
-        </h1>
-        <p class="mt-2 text-sm text-gray-500">
-            Controller version {{ version }} · API version {{ api_version }}
-        </p>
+        <section class="api-section">
+            <h2 class="api-section-title">Supervaizer API</h2>
+            <p class="api-version">Controller version {{ version }} · API version {{ api_version }}</p>
 
-        <div class="mt-8">
-            <h2 class="text-lg font-medium text-gray-900 mb-4">Links</h2>
-            <ul class="space-y-2">
-                <li>
-                    <a href="{{ base }}/docs" class="text-blue-600 hover:text-blue-800 font-medium">
-                        Swagger UI
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ base }}/redoc" class="text-blue-600 hover:text-blue-800 font-medium">
-                        ReDoc
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ base }}/openapi.json" class="text-blue-600 hover:text-blue-800 font-medium">
-                        OpenAPI
-                    </a>
-                </li>
-                <li><strong>BASE:</strong> {{ base }}
-                    <br>
-                    <strong>PUBLIC_URL:</strong> {{ public_url }}
-                    <br>
-                    <strong>FULL_URL:</strong> {{ full_url }}
-                    <br>
-                </li>
-
-                {% if show_admin %}
-                <li>
-                    <a href="{{ base }}/admin" class="text-blue-600 hover:text-blue-800 font-medium">
-                        Admin
-                    </a>
-                </li>
-                {% endif %}
-            </ul>
-        </div>
-
-        <div class="cards">
-            <div class="card">
-                <h3>Interactive API Docs</h3>
-                <p>Explore this API's endpoints with the interactive Swagger UI. Test requests and view response schemas
-                    in real-time.</p>
-                <a href="/docs">Open Swagger UI →</a>
+            <div class="cards cards--single">
+                <div class="card">
+                    <h3>Interactive API Docs</h3>
+                    <p>Explore this API's endpoints with the interactive Swagger UI. Test requests and view response
+                        schemas in real-time.</p>
+                    <div class="card-links">
+                        <a href="{{ base }}/docs">Swagger UI →</a>
+                        <a href="{{ base }}/redoc">ReDoc →</a>
+                        <a href="{{ base }}/openapi.json">OpenAPI (JSON) →</a>
+                        {% if show_admin %}
+                        <a href="{{ base }}/admin">Admin →</a>
+                        {% endif %}
+                    </div>
+                    <div class="api-urls">
+                        <p><strong>BASE:</strong> <code>{{ base }}</code></p>
+                        <p><strong>PUBLIC_URL:</strong> <code>{{ public_url }}</code></p>
+                        <p><strong>FULL_URL:</strong> <code>{{ full_url }}</code></p>
+                    </div>
+                </div>
             </div>
-
-            <div class="card">
-                <h3>Sample Data</h3>
-                <p>Access sample JSON data through our REST API. Perfect for testing and development purposes.</p>
-                <a href="/api/data">Get Data →</a>
-            </div>
-
-        </div>
+        </section>
     </main>
 </body>
 
