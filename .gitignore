@@ -2,6 +2,11 @@
 # Created by https://www.toptal.com/developers/gitignore/api/macos,python
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,python
 
+### Agent / oat (do not track) ###
+AGENTS.md
+AGENTS.compiled.md
+.agent/
+
 ### macOS ###
 # General
 .DS_Store
@@ -9,7 +14,8 @@
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
