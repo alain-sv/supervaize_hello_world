@@ -31,7 +31,7 @@ console = Console(style="yellow")
 # SUPERVAIZER_HOST and SUPERVAIZER_PORT
 DEV_PUBLIC_URL = "https://myagent-dev.loca.lt"
 # Public url of your hosted agent
-PROD_PUBLIC_URL = "https://myagent.cloud-hosting.net:8001"
+PROD_PUBLIC_URL = os.getenv("SUPERVAIZE_PUBLIC_URL")
 
 # Define the parameters and secrets expected by the agent
 agent_parameters: ParametersSetup | None = ParametersSetup.from_list([
@@ -185,7 +185,7 @@ account: Account = Account(
 sv_server: Server = Server(
     agents=[agent],
     a2a_endpoints=True,  # Enable A2A endpoints
-    # supervisor_account=account,  # Account of the supervisor from Supervaize
+    supervisor_account=account,  # Account of the supervisor from Supervaize
 )
 
 
