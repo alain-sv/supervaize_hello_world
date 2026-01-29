@@ -1,3 +1,4 @@
-from supervaizer_control import start_server
+from supervaizer_control import app
 
-start_server()
+# Expose the FastAPI app instance
+__all__ = ["app"]
