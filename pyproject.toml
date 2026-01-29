@@ -4,7 +4,4 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = [
-    "fastapi>=0.128.0",
-    "supervaizer[deploy]>=0.10.4",
-]
+dependencies = ["fastapi>=0.128.0", "supervaizer>=0.10.6"]
