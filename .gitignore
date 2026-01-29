@@ -214,3 +214,8 @@ pyrightconfig.json
 AGENTS*.md
 .agent/
 .cursorrules
+
+
+.envrc
+.vercel
+.env*.local
