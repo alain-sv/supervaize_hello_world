@@ -178,7 +178,7 @@ agent: Agent = Agent(
 account: Account = Account(
     workspace_id=os.getenv("SUPERVAIZE_WORKSPACE_ID") or "dummy_workspace_id",
     api_key=os.getenv("SUPERVAIZE_API_KEY") or "dummy_api_key",
-    api_url=os.getenv("SUPERVAIZE_API_URL") or "https://api.supervaize.com",
+    api_url=os.getenv("SUPERVAIZE_API_URL") or "https://app.supervaize.com",
 )
 
 # Define the supervaizer server capabilities
