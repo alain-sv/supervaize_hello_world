@@ -16,11 +16,13 @@ from supervaizer import (
     Agent,
     AgentMethod,
     AgentMethods,
+    AgentMethodField,
     Parameter,
     ParametersSetup,
     Server,
 )
 from supervaizer.account import Account
+from supervaizer.__version__ import API_VERSION, VERSION
 
 # Create a console with default style set to yellow
 console = Console(style="yellow")
@@ -42,84 +44,100 @@ agent_parameters: ParametersSetup | None = ParametersSetup.from_list([
         is_secret=True,
     ),
     Parameter(
-        name="SERPER_API",
-        description="Server API key updated",
+        name="AGENTMAIL_API_KEY",
+        description="AgentMail API key - see https://agentmail.to",
         is_environment=True,
         is_secret=True,
     ),
     Parameter(
-        name="COMPETITOR_SUMMARY_URL",
-        description="Competitor Summary URL",
+        name="AGENTMAIL_EMAIL",
+        description="AgentMail email - see https://agentmail.to",
         is_environment=True,
         is_secret=False,
     ),
 ])
 
-# Define the method used to start a job
+job_start_fields: list[AgentMethodField] = [
+    AgentMethodField(
+        name="Company to research",
+        type=str,
+        field_type="CharField",
+        description="Company to research",
+        default="Google",
+        required=True,
+    ),
+    AgentMethodField(
+        name="Max number of results",
+        type=int,
+        field_type="IntegerField",
+        description="Max number of results",
+        default=10,
+        required=True,
+    ),
+    AgentMethodField(
+        name="Subscribe to updates",
+        type=bool,
+        field_type="BooleanField",
+        description="Subscribe to updates",
+        default=False,
+        required=False,
+    ),
+    AgentMethodField(
+        name="Type of research",
+        type=str,
+        field_type="ChoiceField",
+        description="Type of research",
+        choices=[["A", "Advanced"], ["R", "Restricted"]],
+        required=True,
+    ),
+    AgentMethodField(
+        name="Details of research",
+        type=str,
+        field_type="CharField",
+        description="Details of research",
+        default="",
+        required=False,
+    ),
+    AgentMethodField(
+        name="List of countries",
+        type=list[str],
+        field_type="MultipleChoiceField",
+        description="List of countries",
+        choices=[
+            ["PA", "Panama"],
+            ["PG", "Papua New Guinea"],
+            ["PY", "Paraguay"],
+            ["PE", "Peru"],
+            ["PH", "Philippines"],
+            ["PN", "Pitcairn"],
+            ["PL", "Poland"],
+        ],
+        required=True,
+    ),
+    AgentMethodField(
+        name="languages",
+        type=list[str],
+        field_type="MultipleChoiceField",
+        description="languages",
+        choices=[["en", "English"], ["fr", "French"], ["es", "Spanish"]],
+        required=False,
+    ),
+    AgentMethodField(
+        name="languages",
+        type=list[str],
+        field_type="MultipleChoiceField",
+        description="languages",
+        choices=[["en", "English"], ["fr", "French"], ["es", "Spanish"]],
+        required=False,
+    ),
+]
+
 job_start_method: AgentMethod = AgentMethod(
     name="start",  # This is required
-    method="example_agent.example_synchronous_job_start",  # Path to the main function in dotted notation.
+    method="hello_world.job_start",  # Path to the main function in dotted notation.
     is_async=False,  # Only use sync methods for the moment
     params={"action": "start"},  # If default parameters must be passed to the function.
-    fields=[
-        {
-            "name": "Company to research",  # Field name - displayed in the UI
-            "type": str,  # Python type of the field for pydantic validation - note , ChoiceField and MultipleChoiceField are a list[str]
-            "field_type": "CharField",  # Field type for persistence.
-            "description": "Company to research",  # Optional -  Description of the field - displayed in the UI
-            "default": "Google",  # Optional - Default value for the field
-            "required": True,  # Whether the field is required
-        },
-        {
-            "name": "Max number of results",
-            "type": int,
-            "field_type": "IntegerField",
-            "required": True,
-        },
-        {
-            "name": "Subscribe to updates",
-            "type": bool,
-            "field_type": "BooleanField",
-            "required": False,
-        },
-        {
-            "name": "Type of research",
-            "type": str,
-            "field_type": "ChoiceField",
-            "choices": [["A", "Advanced"], ["R", "Restricted"]],
-            "widget": "RadioSelect",
-            "required": True,
-        },
-        {
-            "name": "Details of research",
-            "type": str,
-            "field_type": "CharField",
-            "widget": "Textarea",
-            "required": False,
-        },
-        {
-            "name": "List of countries",
-            "type": list[str],
-            "field_type": "MultipleChoiceField",
-            "choices": [
-                ["PA", "Panama"],
-                ["PG", "Papua New Guinea"],
-                ["PY", "Paraguay"],
-                ["PE", "Peru"],
-                ["PH", "Philippines"],
-                ["PN", "Pitcairn"],
-                ["PL", "Poland"],
-            ],
-            "required": True,
-        },
-        {
-            "name": "languages",
-            "type": list[str],
-            "field_type": "MultipleChoiceField",
-            "choices": [["en", "English"], ["fr", "French"], ["es", "Spanish"]],
-            "required": False,
-        },
-    ],
+    fields=job_start_fields,
     description="Start the collection of new competitor summary",
 )
 
@@ -150,19 +168,19 @@ custom_method2: AgentMethod = AgentMethod(
 )
 
 
-agent_name = "competitor_summary"
+agent_name = "Hello World AI Agent"
 
 # Define the Agent
 agent: Agent = Agent(
     name=agent_name,
     id=shortuuid.uuid(f"{agent_name}"),
-    author="John Doe",  # Author of the agent
-    developer="Developer",  # Developer of the controller integration
-    maintainer="Ive Maintained",  # Maintainer of the integration
-    editor="DevAiExperts",  # Editor (usually a company)
-    version="1.3",  # Version string
+    author="Alain Prasquier <al1@supervaize.com>",  # Author of the agent
+    developer="Alain Prasquier <al1@supervaize.com>",  # Developer of the controller integration
+    maintainer="Alain Prasquier <al1@supervaize.com>",  # Maintainer of the integration
+    editor="Alain Prasquier <al1@supervaize.com>",  # Editor (usually a company)
+    version="1.0",  # Version string
     description="This is a test agent",
-    tags=["testtag", "testtag2"],
+    tags=["hello world", "ai agent"],
     methods=AgentMethods(
         job_start=job_start_method,
         job_stop=job_stop_method,
@@ -191,6 +209,20 @@ sv_server: Server = Server(
 
 # Expose the FastAPI app instance for deployment
 app = sv_server.app
+
+
+@app.get("/api/context")
+def api_context() -> dict:
+    """Return context for the home page (version, base URLs, show_admin)."""
+    base = sv_server.public_url or f"{sv_server.scheme}://{sv_server.host}:{sv_server.port}"
+    return {
+        "version": VERSION,
+        "api_version": API_VERSION,
+        "base": base,
+        "public_url": sv_server.public_url or base,
+        "full_url": f"{sv_server.scheme}://{sv_server.host}:{sv_server.port}",
+        "show_admin": bool(sv_server.api_key),
+    }
 
 
 if __name__ == "__main__":

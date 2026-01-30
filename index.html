@@ -365,7 +365,7 @@
 
         <section class="api-section">
             <h2 class="api-section-title">Supervaizer API</h2>
-            <p class="api-version">Controller version {{ version }} · API version {{ api_version }}</p>
+            <p class="api-version">Controller version <span id="version">—</span> · API version <span id="api_version">—</span></p>
 
             <div class="cards cards--single">
                 <div class="card">
@@ -373,21 +373,34 @@
                     <p>Explore this API's endpoints with the interactive Swagger UI. Test requests and view response
                         schemas in real-time.</p>
                     <div class="card-links">
-                        <a href="{{ base }}/docs">Swagger UI →</a>
-                        <a href="{{ base }}/redoc">ReDoc →</a>
-                        <a href="{{ base }}/openapi.json">OpenAPI (JSON) →</a>
-                        {% if show_admin %}
-                        <a href="{{ base }}/admin">Admin →</a>
-                        {% endif %}
+                        <a href="/docs">Swagger UI →</a>
+                        <a href="/redoc">ReDoc →</a>
+                        <a href="/openapi.json">OpenAPI (JSON) →</a>
+                        <span id="admin-link-wrap"></span>
                     </div>
                     <div class="api-urls">
-                        <p><strong>BASE:</strong> <code>{{ base }}</code></p>
-                        <p><strong>PUBLIC_URL:</strong> <code>{{ public_url }}</code></p>
-                        <p><strong>FULL_URL:</strong> <code>{{ full_url }}</code></p>
+                        <p><strong>BASE:</strong> <code id="base">—</code></p>
+                        <p><strong>PUBLIC_URL:</strong> <code id="public_url">—</code></p>
+                        <p><strong>FULL_URL:</strong> <code id="full_url">—</code></p>
                     </div>
                 </div>
             </div>
         </section>
+    <script>
+        fetch("/api/context").then(function(r) { return r.ok ? r.json() : null; }).then(function(ctx) {
+            if (!ctx) return;
+            var set = function(id, val) { var el = document.getElementById(id); if (el) el.textContent = val || "—"; };
+            set("version", ctx.version);
+            set("api_version", ctx.api_version);
+            set("base", ctx.base);
+            set("public_url", ctx.public_url);
+            set("full_url", ctx.full_url);
+            if (ctx.show_admin) {
+                var wrap = document.getElementById("admin-link-wrap");
+                if (wrap) { var a = document.createElement("a"); a.href = "/admin"; a.textContent = "Admin →"; wrap.appendChild(a); }
+            }
+        });
+    </script>
     </main>
 </body>
 
