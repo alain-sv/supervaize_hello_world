@@ -219,3 +219,6 @@ AGENTS*.md
 .envrc
 .vercel
 .env*.local
+
+# uv local dev overrides (use local supervaizer etc.)
+uv.toml
