@@ -96,14 +96,6 @@ job_start_fields: list[AgentMethodField] = [
         required=True,
     ),
     AgentMethodField(
-        name="Details of research",
-        type=str,
-        field_type="CharField",
-        description="Details of research",
-        default="",
-        required=False,
-    ),
-    AgentMethodField(
         name="List of countries",
         type=list[str],
         field_type="MultipleChoiceField",
