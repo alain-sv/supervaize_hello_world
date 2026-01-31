@@ -365,7 +365,8 @@
 
         <section class="api-section">
             <h2 class="api-section-title">Supervaizer API</h2>
-            <p class="api-version">Controller version <span id="version">—</span> · API version <span id="api_version">—</span></p>
+            <p class="api-version">Controller version <span id="version">—</span> · API version <span
+                    id="api_version">—</span></p>
 
             <div class="cards cards--single">
                 <div class="card">
@@ -379,28 +380,26 @@
                         <span id="admin-link-wrap"></span>
                     </div>
                     <div class="api-urls">
-                        <p><strong>BASE:</strong> <code id="base">—</code></p>
-                        <p><strong>PUBLIC_URL:</strong> <code id="public_url">—</code></p>
                         <p><strong>FULL_URL:</strong> <code id="full_url">—</code></p>
                     </div>
                 </div>
             </div>
         </section>
-    <script>
-        fetch("/api/context").then(function(r) { return r.ok ? r.json() : null; }).then(function(ctx) {
-            if (!ctx) return;
-            var set = function(id, val) { var el = document.getElementById(id); if (el) el.textContent = val || "—"; };
-            set("version", ctx.version);
-            set("api_version", ctx.api_version);
-            set("base", ctx.base);
-            set("public_url", ctx.public_url);
-            set("full_url", ctx.full_url);
-            if (ctx.show_admin) {
-                var wrap = document.getElementById("admin-link-wrap");
-                if (wrap) { var a = document.createElement("a"); a.href = "/admin"; a.textContent = "Admin →"; wrap.appendChild(a); }
-            }
-        });
-    </script>
+        <script>
+            fetch("/api/context").then(function (r) { return r.ok ? r.json() : null; }).then(function (ctx) {
+                if (!ctx) return;
+                var set = function (id, val) { var el = document.getElementById(id); if (el) el.textContent = val || "—"; };
+                set("version", ctx.version);
+                set("api_version", ctx.api_version);
+                set("base", ctx.base);
+                set("public_url", ctx.public_url);
+                set("full_url", ctx.full_url);
+                if (ctx.show_admin) {
+                    var wrap = document.getElementById("admin-link-wrap");
+                    if (wrap) { var a = document.createElement("a"); a.href = "/admin"; a.textContent = "Admin →"; wrap.appendChild(a); }
+                }
+            });
+        </script>
     </main>
 </body>
 
