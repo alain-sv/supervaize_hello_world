@@ -1,11 +1,7 @@
-import random
-from time import sleep
 from typing import TYPE_CHECKING
 
 from rich.console import Console
 from supervaizer import (
-    Case,
-    CaseNodeUpdate,
     EntityStatus,
     JobContext,
     JobInstructions,
@@ -19,7 +15,7 @@ if TYPE_CHECKING:
 
 
 # Custom method to start a synchronous job.
-def job_start(**kwargs) -> JobResponse:
+def job_start(**kwargs) -> JobResponse | None:
     """
     This is a synchronous job : all cases are executed in the same process.
     It is useful for testing and development.
@@ -96,47 +92,3 @@ def job_start(**kwargs) -> JobResponse:
     )
 
     return res
-
-
-def custom_case_start(case_id: str, job_id: str, **kwargs):
-    console.print(
-        f"AGENT ExampleAgent: Starting Case [blue]{case_id}[/blue] with params: {kwargs}"
-    )
-    print(
-        f"AGENT ExampleAgent: Starting Case [blue]{case_id}[/blue] with params: {kwargs}"
-    )
-    kwargs["case_id"] = case_id
-    random_sleep = random.uniform(0, 5)
-    random_cost = random.uniform(0, 10)
-    case = Case.start(
-        job_id=job_id,
-        account=supervaize_account,
-        name=f"Case {case_id}",
-        description=f"case {case_id} in job {job_id} - random sleep {random_sleep} - random cost {random_cost}",
-        nodes=nodes,
-    )
-
-    sleep(random_sleep)
-
-    case.update(
-        CaseNodeUpdate(
-            name=f"Update Case {case_id}",
-            cost=random_cost,
-            payload={
-                "message": f"This a case update after sleeping for {random_sleep} seconds! - cost was {random_cost}"
-            },
-            is_final=False,
-        )
-    )
-
-    case.close(case_result={"message": "Case Completed"})
-
-    console.print(f"AGENT ExampleAgent: Case id {case_id} finished")
-    return case
-
-
-def resume_case_with_human_input(case_id: str, job_id: str, **kwargs):
-    case = Case.resume(id=case_id, job_id=job_id, account=supervaize_account)
-
-    case.close()
-    return

@@ -14,3 +14,7 @@ vercel_add_env:
 
 vercel_redeploy:
     vercel --prod
+
+# Test locally with Vercel
+vercel_dev:
+    vercel dev
