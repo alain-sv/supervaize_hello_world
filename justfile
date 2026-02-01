@@ -18,3 +18,7 @@ vercel_redeploy:
 # Test locally with Vercel
 vercel_dev:
     vercel dev
+
+
+local_url:
+    lt --port 3000 --subdomain supervaize-hello-world
