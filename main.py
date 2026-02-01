@@ -20,6 +20,3 @@ def api_context() -> dict:
         "full_url": f"{sv_server.scheme}://{sv_server.host}:{sv_server.port}",
         "show_admin": bool(sv_server.api_key),
     }
-
-
-sv_server.launch(start_uvicorn=False)
