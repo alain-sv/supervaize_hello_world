@@ -1,10 +1,87 @@
-from loguru import logger
+import random
+from time import sleep
+
+from loguru import logger as log
 from supervaizer import (
+    Case,
+    CaseNode,
+    CaseNodeUpdate,
     EntityStatus,
     JobContext,
     JobInstructions,
     JobResponse,
 )
+
+nodes = [
+    CaseNode(name="Start", description="Workflow start", type="trigger"),
+    CaseNode(
+        name="Fetch Data",
+        description="Retrieve data from API",
+        type="http_request",
+    ),
+    CaseNode(
+        name="Process Data",
+        description="Apply business logic",
+        type="function",
+    ),
+    CaseNode(
+        name="Human Input",
+        description="Human Input",
+        type="human_input",
+    ),
+    CaseNode(
+        name="Validation",
+        description="Human Validation",
+        type="human_input",
+    ),
+    CaseNode(
+        name="Store Result",
+        description="Save processed data",
+        type="database",
+    ),
+]
+
+
+def custom_case_start(case_id: str, job_id: str, **kwargs):
+    log.info(
+        f"AGENT ExampleAgent: Starting Case [blue]{case_id}[/blue] with params: {kwargs}"
+    )
+
+    kwargs["case_id"] = case_id
+    random_sleep = random.uniform(0, 5)
+    random_cost = random.uniform(0, 10)
+    case = Case.start(
+        job_id=job_id,
+        account=supervaize_account,
+        name=f"Case {case_id}",
+        description=f"case {case_id} in job {job_id} - random sleep {random_sleep} - random cost {random_cost}",
+        nodes=nodes,
+    )
+
+    sleep(random_sleep)
+
+    case.update(
+        CaseNodeUpdate(
+            name=f"Update Case {case_id}",
+            cost=random_cost,
+            payload={
+                "message": f"This a case update after sleeping for {random_sleep} seconds! - cost was {random_cost}"
+            },
+            is_final=False,
+        )
+    )
+
+    case.close(case_result={"message": "Case Completed"})
+
+    log.info(f"AGENT ExampleAgent: Case id {case_id} finished")
+    return case
+
+
+def resume_case_with_human_input(case_id: str, job_id: str, **kwargs):
+    case = Case.resume(id=case_id, job_id=job_id, account=supervaize_account)
+
+    case.close()
+    return
 
 
 # Custom method to start a synchronous job.
@@ -23,6 +100,11 @@ def job_start(**kwargs) -> JobResponse | None:
         conditions: JobInstructions
             The conditions of the job - contains stop_on_error, max_cases, etc. Defined by the user when the job is created in the Supervaize platform.
     """
+
+    logger.info(f"AGENT ExampleAgent: Received kwargs: {kwargs}")
+    for key, value in kwargs.items():
+        logger.debug(f"AGENT kwargs - {key}: {value}")
+
     cases = 0
     cost = 0.0
 
@@ -35,8 +117,47 @@ def job_start(**kwargs) -> JobResponse | None:
     logger.info(f"AGENT ExampleAgent: Starting Job {job_id}")
     logger.info(f"AGENT ExampleAgent: Job Fields : {job_fields}")
     logger.info(f"AGENT ExampleAgent: Job Instructions : {job_instructions}")
+    logger.info(
+        f"AGENT ExampleAgent: Agent Parameters : {kwargs.get('encrypted_agent_parameters', None)}"
+    )
 
-    for i in range(3):
+    """
+    Sample logs: 
+    This is how we receive the 
+    agent_parameters = [
+        {
+            "name": "SIMPLE AGENT SECRET",
+            "team_id": 2,
+            "description": "Setup agent secret in this workspace",
+            "is_environment": True,
+            "value": "123456",
+            "is_secret": True,
+            "is_required": False,
+        },
+        {
+            "name": "SIMPLE AGENT PARAMETER",
+            "team_id": 2,
+            "description": "Setup agent parameter in this workspace",
+            "is_environment": True,
+            "value": "123456",
+            "is_secret": False,
+            "is_required": False,
+        },
+    ]
+    
+    - Sample job_context:
+    {'job_context': {'workspace_id': 'odm', 'job_id': '01KGG50ZMY557VTC8YAQBAHKXP', 
+    'started_by': 'alp', 'started_at': '2026-02-02T21:44:32.159453+00:00', 'mission_id': '01KGG50ZMFYMHG9N5FGCACF0XA', 
+    'mission_name': 'Operate Agent Hello World AI Agent', 'job_instructions': {'max_cost': None, 'max_cases': None,
+    'max_duration': None, 'stop_on_error': True, 'stop_on_warning': False}}, 'job_fields': {'How many times to say hello': '3'}, 
+    'encrypted_agent_parameters': 'TnPjhEHJnwOT+tsbI9CvpUt3taqKNoep4LnrgCxtv3fHrMIMRBHHAUW8bvCq2Rxak/LqtEaYi3FknWnGYYdPyld5/oGay0fEkcJMiRa5P5OmJHiAXW+kncNLlPiKSpaELyuXnGTP+E9sI+ktkPlYFbCsy1+DqvwB0gJ3mEAA2SUH5P8Fzic7DY3ksb1Kuqyd24hm+3maMGnyn4a5T4mb90Hc4w6h1xRjsR4UaqHOSpxVV4SstIUbgf0thcQxxgrHGYejxsBT9TD6lqvzUoO/fvmpcYNt1k7r8ppv9VwUGM+5Ah2gwoYN7HhFM5kXwfhP2fm4LF1UYVkTlAlxeSerTAF8pPPCzXqWI+BluCpsQRvL0Qc0MuVow8XJ2xD0Q/EJs4N7hMDhznIvsU1OVLegzycwH2+vVDDphy2aXBePZmx7dRJNKSvKPampuLi7so/IxGXTOc02GuUogBk7Hh729MOtA3zRaMrKVUJMnhXEQS4tjm/Xfeaf3odMOXgoeSXB8WAu7wfLflzuIa3CFpnp/daLtdi7Q9NccGLgkpgASUIuq0HviN+FB0qH1QAYX4x8bfVC/JIpb2je8/AKijl6EzwZ9bm5unLo78kEDw/vBD25JCHMg/G8MoqyKK2myFmyHSxbmenT85c6f2B2xFYEXrMZRrqPxfVNAH8rdcH+0+rjRemm0U+erGsI2Lg/KnmPjYTlK5NJA/MoBCZBUfNAozIS7cvUQr1MWSrrNdpFdIzBWL1pNA3ZJcISLrvIxuFgDKyM4xz+365rOLALa2qHMk1bovjmTGtgAMP3VTdf59JWtQOvpIw+sv7kH5D2FgHkzJFuPo8Eobna4teKQWORikvGgdxLv8q4m7pxdyTSJDU='}
+
+    """
+
+    # Get main job field:
+    how_many_times_to_say_hello = job_fields.get("How many times to say hello")
+
+    for i in range(how_many_times_to_say_hello):
         # Check if the conditions to continue the job are met.
         check, explanation = (
             job_instructions.check(cases=cases, cost=cost)
