@@ -43,7 +43,7 @@ simple_agent_parameters = ParametersSetup.from_list([
 # Define the start method for the agent
 job_start_method = AgentMethod(
     name="start",
-    method="simple_agent.job_start",
+    method="agent_simple.job_start",
     is_async=False,
     params={"action": "start"},
     fields=[
