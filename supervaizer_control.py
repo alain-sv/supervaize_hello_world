@@ -10,7 +10,6 @@
 
 import os
 import shortuuid
-from rich.console import Console
 from supervaizer import (
     Agent,
     AgentMethods,
@@ -21,8 +20,6 @@ from supervaizer import (
     ParametersSetup,
     Parameter,
 )
-
-console = Console(style="yellow")
 
 #### SIMPLE AGENT ####
 agent_name = "Hello World AI Agent"

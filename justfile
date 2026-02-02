@@ -2,6 +2,14 @@
 default:
     @just --list
 
+
+uv-sync:
+    uv sync
+
+# Sync deps then overlay local supervaizer (dev only). Prod: just uv sync.
+uv-sync-dev:
+    uv sync && uv pip install -e ../supervaizer
+
 # Send the environment variables to Vercel 
 vercel_add_env:
     echo $SUPERVAIZE_API_URL | vercel env add SUPERVAIZE_API_URL production --force

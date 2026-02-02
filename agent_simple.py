@@ -1,12 +1,10 @@
-from rich.console import Console
+from loguru import logger
 from supervaizer import (
     EntityStatus,
     JobContext,
     JobInstructions,
     JobResponse,
 )
-
-console = Console(style="yellow")
 
 
 # Custom method to start a synchronous job.
@@ -34,9 +32,9 @@ def job_start(**kwargs) -> JobResponse | None:
 
     job_id = job_context.job_id
 
-    console.print(f"AGENT ExampleAgent: Starting Job [blue]{job_id}[/blue] ")
-    console.print(f"AGENT ExampleAgent: Job Fields : {job_fields}")
-    console.print(f"AGENT ExampleAgent: Job Instructions : {job_instructions}")
+    logger.info(f"AGENT ExampleAgent: Starting Job {job_id}")
+    logger.info(f"AGENT ExampleAgent: Job Fields : {job_fields}")
+    logger.info(f"AGENT ExampleAgent: Job Instructions : {job_instructions}")
 
     for i in range(3):
         # Check if the conditions to continue the job are met.
@@ -54,22 +52,16 @@ def job_start(**kwargs) -> JobResponse | None:
                 cost += getattr(case_result, "cost", 1.1)  # Increment cost of job
                 cases += 1  # Increment number of cases
             except Exception as e:
-                console.print(
-                    f"AGENT ExampleAgent: [red]Error on case {case_id}: {e}[/red]"
-                )
+                logger.error(f"AGENT ExampleAgent: Error on case {case_id}: {e}")
                 if job_instructions and job_instructions.stop_on_error:
-                    console.print(
-                        f"AGENT ExampleAgent: [red]STOPPING JOB ON ERROR: {e}[/red]"
-                    )
+                    logger.error(f"AGENT ExampleAgent: STOPPING JOB ON ERROR: {e}")
                     raise Exception(e)
                 else:
-                    console.print(
+                    logger.info(
                         "AGENT ExampleAgent: CONTINUING JOB - stop_on_error is False"
                     )
         else:
-            console.print(
-                f"AGENT ExampleAgent: [orange]STOPPING JOB: {explanation}[/orange]"
-            )
+            logger.warning(f"AGENT ExampleAgent: STOPPING JOB: {explanation}")
             break
 
     final_deliverable = {"VERY": "IMPORTANT"}
@@ -82,8 +74,8 @@ def job_start(**kwargs) -> JobResponse | None:
         cost=cost,
     )
 
-    console.print(
-        f"AGENT ExampleAgent: Job [blue]{job_id}[/blue] completed   - Total cost: {cost} -> {res}"
+    logger.info(
+        f"AGENT ExampleAgent: Job {job_id} completed - Total cost: {cost} -> {res}"
     )
 
     return res

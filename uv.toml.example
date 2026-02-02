@@ -1,7 +1,0 @@
-# Copy to uv.toml for local Supervaizer dev (use editable supervaizer from sibling dir).
-# uv.toml is gitignored; prod/CI use PyPI.
-#
-#   cp uv.toml.example uv.toml
-#
-[sources]
-supervaizer = { path = "../supervaizer", editable = true }

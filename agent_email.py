@@ -11,7 +11,7 @@
 import os
 
 import shortuuid
-from rich.console import Console
+from loguru import logger
 from supervaizer import (
     Agent,
     AgentMethod,
@@ -28,9 +28,6 @@ from supervaizer import (
     Server,
 )
 from supervaizer.account import Account
-
-# Create a console with default style set to yellow
-console = Console(style="yellow")
 
 # Public url of your hosted agent  (including port if needed)
 # Use loca.lt or ngrok to get a public url during development.
@@ -233,9 +230,9 @@ def job_start(**kwargs) -> JobResponse:
 
     job_id = job_context.job_id
 
-    console.print(f"AGENT ExampleAgent: Starting Job [blue]{job_id}[/blue] ")
-    console.print(f"AGENT ExampleAgent: Job Fields : {job_fields}")
-    console.print(f"AGENT ExampleAgent: Job Instructions : {job_instructions}")
+    logger.info(f"AGENT ExampleAgent: Starting Job {job_id}")
+    logger.info(f"AGENT ExampleAgent: Job Fields : {job_fields}")
+    logger.info(f"AGENT ExampleAgent: Job Instructions : {job_instructions}")
 
     for i in range(3):
         # Check if the conditions to continue the job are met.
@@ -253,22 +250,16 @@ def job_start(**kwargs) -> JobResponse:
                 cost += getattr(case_result, "cost", 1.1)  # Increment cost of job
                 cases += 1  # Increment number of cases
             except Exception as e:
-                console.print(
-                    f"AGENT ExampleAgent: [red]Error on case {case_id}: {e}[/red]"
-                )
+                logger.error(f"AGENT ExampleAgent: Error on case {case_id}: {e}")
                 if job_instructions and job_instructions.stop_on_error:
-                    console.print(
-                        f"AGENT ExampleAgent: [red]STOPPING JOB ON ERROR: {e}[/red]"
-                    )
+                    logger.error(f"AGENT ExampleAgent: STOPPING JOB ON ERROR: {e}")
                     raise Exception(e)
                 else:
-                    console.print(
+                    logger.info(
                         "AGENT ExampleAgent: CONTINUING JOB - stop_on_error is False"
                     )
         else:
-            console.print(
-                f"AGENT ExampleAgent: [orange]STOPPING JOB: {explanation}[/orange]"
-            )
+            logger.warning(f"AGENT ExampleAgent: STOPPING JOB: {explanation}")
             break
 
     final_deliverable = {"VERY": "IMPORTANT"}
@@ -281,20 +272,15 @@ def job_start(**kwargs) -> JobResponse:
         cost=cost,
     )
 
-    console.print(
-        f"AGENT ExampleAgent: Job [blue]{job_id}[/blue] completed   - Total cost: {cost} -> {res}"
+    logger.info(
+        f"AGENT ExampleAgent: Job {job_id} completed - Total cost: {cost} -> {res}"
     )
 
     return res
 
 
 def custom_case_start(case_id: str, job_id: str, **kwargs):
-    console.print(
-        f"AGENT ExampleAgent: Starting Case [blue]{case_id}[/blue] with params: {kwargs}"
-    )
-    print(
-        f"AGENT ExampleAgent: Starting Case [blue]{case_id}[/blue] with params: {kwargs}"
-    )
+    logger.info(f"AGENT ExampleAgent: Starting Case {case_id} with params: {kwargs}")
     kwargs["case_id"] = case_id
     random_sleep = random.uniform(0, 5)
     random_cost = random.uniform(0, 10)
@@ -321,7 +307,7 @@ def custom_case_start(case_id: str, job_id: str, **kwargs):
 
     case.close(case_result={"message": "Case Completed"})
 
-    console.print(f"AGENT ExampleAgent: Case id {case_id} finished")
+    logger.info(f"AGENT ExampleAgent: Case id {case_id} finished")
     return case
 
 
