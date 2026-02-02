@@ -1,5 +1,3 @@
-from typing import TYPE_CHECKING
-
 from rich.console import Console
 from supervaizer import (
     EntityStatus,
@@ -9,9 +7,6 @@ from supervaizer import (
 )
 
 console = Console(style="yellow")
-
-if TYPE_CHECKING:
-    pass
 
 
 # Custom method to start a synchronous job.
