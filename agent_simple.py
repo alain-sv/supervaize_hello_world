@@ -1,7 +1,8 @@
 import random
+import os
 from time import sleep
 
-from loguru import log as log
+from loguru import log
 from supervaizer import (
     Case,
     CaseNode,
@@ -13,6 +14,10 @@ from supervaizer import (
 )
 
 from __init__ import supervaize_account
+
+log.info(f"ENV: {dict(os.environ)}")
+os.environ.get("VERCEL_ENV")
+log.info(f"-----> VERCEL_ENV: {log.VERCEL_ENV}")
 
 
 nodes = [
