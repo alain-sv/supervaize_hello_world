@@ -1,7 +1,7 @@
 import random
 from time import sleep
 
-from loguru import logger as log
+from loguru import log as log
 from supervaizer import (
     Case,
     CaseNode,
@@ -12,27 +12,15 @@ from supervaizer import (
     JobResponse,
 )
 
+from __init__ import supervaize_account
+
+
 nodes = [
     CaseNode(name="Start", description="Workflow start", type="trigger"),
     CaseNode(
         name="Fetch Data",
         description="Retrieve data from API",
         type="http_request",
-    ),
-    CaseNode(
-        name="Process Data",
-        description="Apply business logic",
-        type="function",
-    ),
-    CaseNode(
-        name="Human Input",
-        description="Human Input",
-        type="human_input",
-    ),
-    CaseNode(
-        name="Validation",
-        description="Human Validation",
-        type="human_input",
     ),
     CaseNode(
         name="Store Result",
@@ -55,7 +43,6 @@ def custom_case_start(case_id: str, job_id: str, **kwargs):
         account=supervaize_account,
         name=f"Case {case_id}",
         description=f"case {case_id} in job {job_id} - random sleep {random_sleep} - random cost {random_cost}",
-        nodes=nodes,
     )
 
     sleep(random_sleep)
@@ -101,9 +88,9 @@ def job_start(**kwargs) -> JobResponse | None:
             The conditions of the job - contains stop_on_error, max_cases, etc. Defined by the user when the job is created in the Supervaize platform.
     """
 
-    logger.info(f"AGENT ExampleAgent: Received kwargs: {kwargs}")
+    log.info(f"AGENT ExampleAgent: Received kwargs: {kwargs}")
     for key, value in kwargs.items():
-        logger.debug(f"AGENT kwargs - {key}: {value}")
+        log.debug(f"AGENT kwargs - {key}: {value}")
 
     cases = 0
     cost = 0.0
@@ -114,10 +101,10 @@ def job_start(**kwargs) -> JobResponse | None:
 
     job_id = job_context.job_id
 
-    logger.info(f"AGENT ExampleAgent: Starting Job {job_id}")
-    logger.info(f"AGENT ExampleAgent: Job Fields : {job_fields}")
-    logger.info(f"AGENT ExampleAgent: Job Instructions : {job_instructions}")
-    logger.info(
+    log.info(f"AGENT ExampleAgent: Starting Job {job_id}")
+    log.info(f"AGENT ExampleAgent: Job Fields : {job_fields}")
+    log.info(f"AGENT ExampleAgent: Job Instructions : {job_instructions}")
+    log.info(
         f"AGENT ExampleAgent: Agent Parameters : {kwargs.get('encrypted_agent_parameters', None)}"
     )
 
@@ -173,16 +160,16 @@ def job_start(**kwargs) -> JobResponse | None:
                 cost += getattr(case_result, "cost", 1.1)  # Increment cost of job
                 cases += 1  # Increment number of cases
             except Exception as e:
-                logger.error(f"AGENT ExampleAgent: Error on case {case_id}: {e}")
+                log.error(f"AGENT ExampleAgent: Error on case {case_id}: {e}")
                 if job_instructions and job_instructions.stop_on_error:
-                    logger.error(f"AGENT ExampleAgent: STOPPING JOB ON ERROR: {e}")
+                    log.error(f"AGENT ExampleAgent: STOPPING JOB ON ERROR: {e}")
                     raise Exception(e)
                 else:
-                    logger.info(
+                    log.info(
                         "AGENT ExampleAgent: CONTINUING JOB - stop_on_error is False"
                     )
         else:
-            logger.warning(f"AGENT ExampleAgent: STOPPING JOB: {explanation}")
+            log.warning(f"AGENT ExampleAgent: STOPPING JOB: {explanation}")
             break
 
     final_deliverable = {"VERY": "IMPORTANT"}
@@ -195,7 +182,7 @@ def job_start(**kwargs) -> JobResponse | None:
         cost=cost,
     )
 
-    logger.info(
+    log.info(
         f"AGENT ExampleAgent: Job {job_id} completed - Total cost: {cost} -> {res}"
     )
 
