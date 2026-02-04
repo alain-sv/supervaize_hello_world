@@ -2,7 +2,7 @@ import random
 import os
 from time import sleep
 
-from loguru import log
+from loguru import logger as log
 from supervaizer import (
     Case,
     CaseNode,
