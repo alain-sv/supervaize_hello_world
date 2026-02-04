@@ -301,6 +301,10 @@
             color: #ffb86c;
         }
 
+        .comment {
+            color: #6272a4;
+        }
+
         @media (max-width: 768px) {
             nav {
                 padding: 1rem;
@@ -347,8 +351,13 @@
                 <p>This is the hello world project for Supervaize - a FastAPI application demonstrating how to build and
                     deploy agents with Supervaize.</p>
 
-                <p>Get your developer credentials at <a href="https://app.supervaize.com"
-                        style="color: #0070f3; text-decoration: underline;">app.supervaize.com</a>.</p>
+                <p>Get your developer credentials at <a href="https://app.supervaize.com/users/developer/"
+                        style="color: #0070f3; text-decoration: underline;">https://app.supervaize.com/users/developer/</a>.
+                </p>
+                <p>Agents: <a href="/agent_simple.py"
+                        style="color: #0070f3; text-decoration: underline;">agent_simple.py</a>, <a
+                        href="/agent_human_loop.py"
+                        style="color: #0070f3; text-decoration: underline;">agent_human_loop.py</a>.</p>
                 <p>To get started locally, set up your virtual environment with <code>uv venv</code>, install
                     dependencies with <code>uv pip install -e .</code>, and start the server with
                     <code>supervaizer start</code>. For more information, visit the <a href="https://doc.supervaize.com"
@@ -356,19 +365,17 @@
                 </p>
             </div>
             <div class="hero-code">
-                <pre><code><span class="keyword">from</span> <span class="module">fastapi</span> <span class="keyword">import</span> <span class="class">FastAPI</span>
-
-<span class="variable">app</span> = <span class="class">FastAPI</span>()
-
-<span class="decorator">@app.get</span>(<span class="string">"/"</span>)
-<span class="keyword">def</span> <span class="function">read_root</span>():
-    <span class="keyword">return</span> {<span class="string">"Python"</span>: <span class="string">"on Vercel"</span>}</code></pre>
+                <pre><code><span class="variable">sv_server</span>: <span class="class">Server</span> = <span class="class">Server</span>(
+    <span class="variable">agents</span>=[<span class="variable">simple_agent</span>, <span class="variable">human_loop_agent</span>],
+    <span class="variable">a2a_endpoints</span>=<span class="keyword">True</span>,  <span class="comment"># Enable A2A endpoints</span>
+    <span class="variable">supervisor_account</span>=<span class="variable">supervaize_account</span>,  <span class="comment"># Account from Supervaize</span>
+)</code></pre>
             </div>
         </div>
 
         <section class="api-section">
             <h2 class="api-section-title">Supervaizer API</h2>
-            <p class="api-version">Controller version <span id="version">—</span> · API version <span
+            <p class="api-version">Supervaizer version <span id="version">—</span> · API version <span
                     id="api_version">—</span></p>
 
             <div class="cards cards--single">
@@ -388,8 +395,14 @@
                 </div>
             </div>
         </section>
+        <section class="api-section" style="margin-top: 3rem;">
+            <h2 class="api-section-title">Debug · full ctx</h2>
+            <pre style="max-height: 20rem; overflow: auto;"><code id="debug-ctx">—</code></pre>
+        </section>
         <script>
             fetch("/api/context").then(function (r) { return r.ok ? r.json() : null; }).then(function (ctx) {
+                var debugEl = document.getElementById("debug-ctx");
+                if (debugEl) debugEl.textContent = ctx != null ? JSON.stringify(ctx, null, 2) : "(failed to load /api/context)";
                 if (!ctx) return;
                 var set = function (id, val) { var el = document.getElementById(id); if (el) el.textContent = val || "—"; };
                 set("version", ctx.version);
