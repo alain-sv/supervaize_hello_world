@@ -1,0 +1,9 @@
+export SUPERVAIZE_API_URL=https://app.supervaize.com
+export SUPERVAIZE_API_KEY=GET_FROM_APP.SUPERVAIZE.COM
+export SUPERVAIZE_WORKSPACE_ID=slug
+export SUPERVAIZER_HOST=supervaizehelloworld.vercel.app
+export SUPERVAIZER_PORT=443
+export SUPERVAIZER_SCHEME=https
+export SUPERVAIZER_PUBLIC_URL=https://supervaizehelloworld.vercel.app
+export SUPERVAIZER_SERVER_ID=TBD
+export SUPERVAIZER_PRIVATE_KEY=TBD

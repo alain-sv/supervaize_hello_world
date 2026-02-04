@@ -84,13 +84,6 @@ def job_start(**kwargs) -> JobResponse | None:
 
     job_id = job_context.job_id
 
-    log.info(f"AGENT ExampleAgent: Starting Job {job_id}")
-    log.info(f"AGENT ExampleAgent: Job Fields : {job_fields}")
-    log.info(f"AGENT ExampleAgent: Job Instructions : {job_instructions}")
-    log.info(
-        f"AGENT ExampleAgent: Agent Parameters : {kwargs.get('encrypted_agent_parameters', None)}"
-    )
-
     """
     Sample logs: 
     This is how we receive the 
@@ -125,8 +118,6 @@ def job_start(**kwargs) -> JobResponse | None:
     """
 
     # Get main job field:
-    log.debug(f"*-*-*-*-*-*-*-AGENT ExampleAgent: Job Fields : {job_fields}")
-    print(f"*-*-*-*-*- PRINT - DEBUG AGENT ExampleAgent: Job Fields : {job_fields}")
     how_many_times_to_say_hello = int(job_fields.get("How many times to say hello"))
 
     for i in range(how_many_times_to_say_hello):
