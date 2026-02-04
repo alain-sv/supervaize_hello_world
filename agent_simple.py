@@ -1,9 +1,8 @@
 import random
 from time import sleep
-
+from loguru import logger as log
 from supervaizer import (
     Case,
-    CaseNode,
     CaseNodeUpdate,
     EntityStatus,
     JobContext,
@@ -12,20 +11,6 @@ from supervaizer import (
 )
 
 from __init__ import supervaize_account
-
-nodes = [
-    CaseNode(name="Start", description="Workflow start", type="trigger"),
-    CaseNode(
-        name="Fetch Data",
-        description="Retrieve data from API",
-        type="http_request",
-    ),
-    CaseNode(
-        name="Store Result",
-        description="Save processed data",
-        type="database",
-    ),
-]
 
 
 def custom_case_start(case_id: str, job_id: str, **kwargs):
