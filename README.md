@@ -1,65 +1,159 @@
 # Supervaize Hello World
 
-This is the hello world project for Supervaize - a FastAPI application demonstrating how to build and deploy agents with Supervaize.
+A minimal example demonstrating how to build and deploy agents with **Supervaize** using the **Supervaizer Controller**.
+
+## What This Example Demonstrates
+
+This project showcases all core Supervaizer concepts:
+
+- **Agent Parameters** — Defining environment variables and secrets
+- **Agent Methods** — Implementing `start`, `stop`, and `status` handlers
+- **Server Configuration** — A2A protocol support and admin interface
+- **Cloud Deployment** — One-click Vercel deployment
+
+## Project Structure
+
+```
+supervaize_hello_world/
+├── supervaizer_control.py   # Main controller configuration
+├── agent_simple.py          # Agent logic (job_start, job_stop, job_status)
+├── pyproject.toml           # Project dependencies
+├── .envrc_template          # Environment variables template
+└── README.md
+```
+
+## Prerequisites
+
+- Python 3.12 or higher
+- [uv](https://docs.astral.sh/uv/) package manager (recommended) or pip
 
 ## Getting Started
 
-### Prerequisites
+### 1. Clone the repository
 
-- Python 3.12 or higher
-- [uv](https://github.com/astral-sh/uv) package manager
+```bash
+git clone https://github.com/alain-sv/supervaize_hello_world.git
+cd supervaize_hello_world
+```
 
-### Local Development
+### 2. Set up the environment
 
-1. **Set up the virtual environment with uv:**
+```bash
+uv venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+uv pip install -e .
+```
 
-   ```bash
-   uv venv
-   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-   ```
+Or with pip:
 
-2. **Install dependencies:**
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .
+```
 
-   ```bash
-   uv pip install -e .
-   ```
+### 3. Start the server
 
-3. **Start the Supervaizer server:**
+```bash
+supervaizer start
+```
 
-   ```bash
-   supervaizer start
-   ```
+Your agent will be available at `http://localhost:8000`.
 
-   Your application will be available at `http://localhost:8000` (or the port configured in your `supervaizer_control.py`).
+## Available Endpoints
 
-### Configuration
+Once running, you can access:
 
-Edit `supervaizer_control.py` to configure your agent(s). See the [Supervaize documentation](https://doc.supervaize.com) for detailed configuration options and examples.
+| Endpoint | Description |
+|----------|-------------|
+| `http://localhost:8000/docs` | API Documentation (Swagger) |
+| `http://localhost:8000/redoc` | API Documentation (ReDoc) |
+| `http://localhost:8000/admin` | Admin Interface |
+| `http://localhost:8000/.well-known/agents.json` | A2A Agent Discovery |
+| `http://localhost:8000/.well-known/health` | Health Check |
 
-## Documentation
+## Testing the Agent
 
-For more information, troubleshooting, and advanced usage, visit the [Supervaize documentation](https://doc.supervaize.com).
+```bash
+# Check agent health
+curl http://localhost:8000/.well-known/health
 
-## Deployment
+# View agent card (A2A discovery)
+curl http://localhost:8000/.well-known/agents.json
+```
+
+## Configuration
+
+### Environment Variables
+
+Copy `.envrc_template` to `.envrc` and configure:
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `SUPERVAIZE_API_KEY` | No* | API key for Supervaize platform |
+| `SUPERVAIZE_WORKSPACE_ID` | No* | Your workspace ID |
+| `SUPERVAIZE_API_URL` | No* | Supervaize API URL |
+| `SUPERVAIZER_HOST` | No | Server host (default: 0.0.0.0) |
+| `SUPERVAIZER_PORT` | No | Server port (default: 8000) |
+| `SUPERVAIZER_PUBLIC_URL` | No | Public URL for callbacks |
+
+*Required only when connecting to the Supervaize platform.
+
+### Agent Configuration
+
+Edit `supervaizer_control.py` to customize:
+
+- Agent metadata (name, description, tags)
+- Parameters and secrets
+- Agent methods and their handlers
+
+## Cloud Deployment
 
 ### Deploy with Vercel
 
-This project is configured to deploy easily on Vercel:
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Falain-sv%2Fsupervaize_hello_world)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fexamples%2Ftree%2Fmain%2Fpython%2Ffastapi&demo-title=FastAPI&demo-description=Use%20FastAPI%20on%20Vercel%20with%20Serverless%20Functions%20using%20the%20Python%20Runtime.&demo-url=https%3A%2F%2Fvercel-plus-fastapi.vercel.app%2F&demo-image=https://assets.vercel.com/image/upload/v1669994600/random/python.png)
+1. Click the deploy button above
+2. Add environment variables from `.envrc_template` in Vercel Project Settings
+3. Deploy!
 
-1. **Install Vercel CLI (optional, for local testing):**
+Or deploy via CLI:
 
-   ```bash
-   npm i -g vercel
-   ```
+```bash
+npm i -g vercel
+vercel
+```
 
-2. **Deploy:**
+For more information, see the [Vercel Python Runtime documentation](https://vercel.com/docs/concepts/functions/serverless-functions/runtimes/python).
 
-   ```bash
-   vercel
-   ```
+## Troubleshooting
 
-   Or use the one-click deploy button above to deploy directly from GitHub.
+### Port already in use
 
-For more information about deploying FastAPI applications on Vercel, see the [Vercel Python Runtime documentation](https://vercel.com/docs/concepts/functions/serverless-functions/runtimes/python).
+Change the port in your environment or edit `supervaizer_control.py`:
+
+```bash
+export SUPERVAIZER_PORT=8001
+supervaizer start
+```
+
+### Module not found
+
+Ensure you've installed the package in editable mode:
+
+```bash
+uv pip install -e .
+```
+
+## Documentation
+
+For comprehensive documentation, visit:
+
+- [Quickstart Guide](https://doc.supervaize.com/docs/supervaizer-controller/quickstart)
+- [Controller Setup Guide](https://doc.supervaize.com/docs/supervaizer-controller/controller-setup)
+- [Cloud Deployment](https://doc.supervaize.com/docs/supervaizer-controller/deploy)
+- [A2A Protocol Support](https://doc.supervaize.com/docs/supervaizer-controller/ref/PROTOCOLS)
+
+## License
+
+This project is licensed under the [Mozilla Public License 2.0](LICENSE).
