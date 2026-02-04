@@ -125,7 +125,7 @@ def job_start(**kwargs) -> JobResponse | None:
     """
 
     # Get main job field:
-    how_many_times_to_say_hello = job_fields.get("How many times to say hello")
+    how_many_times_to_say_hello = int(job_fields.get("How many times to say hello")))
 
     for i in range(how_many_times_to_say_hello):
         # Check if the conditions to continue the job are met.
