@@ -55,6 +55,20 @@ job_start_method = AgentMethod(
         )
     ],
 )
+job_stop_method = AgentMethod(
+    name="stop",
+    method="agent_simple.job_stop",
+    is_async=False,
+    params={"action": "stop"},
+    description="Stop the running job",
+)
+job_status_method = AgentMethod(
+    name="status",
+    method="agent_simple.job_status",
+    is_async=False,
+    params={"action": "status"},
+    description="Get the status of the agent",
+)
 # Define the Agent
 simple_agent: Agent = Agent(
     name=agent_name,
@@ -65,6 +79,8 @@ simple_agent: Agent = Agent(
     tags=["hello world", "ai agent"],
     methods=AgentMethods(
         job_start=job_start_method,
+        job_stop=job_stop_method,
+        job_status=job_status_method,
     ),
     parameters_setup=simple_agent_parameters,
 )

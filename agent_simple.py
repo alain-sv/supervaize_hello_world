@@ -170,3 +170,27 @@ def job_start(**kwargs) -> JobResponse | None:
     )
 
     return res
+
+
+def job_stop(**kwargs) -> None:
+    """
+    Called when the platform requests to stop the running job.
+    For this sync agent a no-op is enough; long-running agents would set a stop flag here.
+    """
+    job_context = kwargs.get("context") or {}
+    job_id = getattr(job_context, "job_id", None) or (
+        job_context.get("job_id") if isinstance(job_context, dict) else None
+    )
+    log.info(f"AGENT ExampleAgent: job_stop requested for job_id={job_id}")
+
+
+def job_status(**kwargs):
+    """
+    Return current job/agent status. Platform may call this to display status.
+    """
+    job_context = kwargs.get("context") or {}
+    job_id = getattr(job_context, "job_id", None) or (
+        job_context.get("job_id") if isinstance(job_context, dict) else None
+    )
+    log.info(f"AGENT ExampleAgent: job_status requested for job_id={job_id}")
+    return {"status": "idle", "job_id": job_id}
