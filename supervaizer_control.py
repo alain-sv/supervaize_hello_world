@@ -86,6 +86,60 @@ simple_agent: Agent = Agent(
 )
 
 
+#### HUMAN-IN-THE-LOOP AGENT ####
+human_loop_agent_name = "Human-in-the-Loop Agent"
+
+human_loop_job_start = AgentMethod(
+    name="start",
+    method="agent_human_loop.job_start",
+    is_async=False,
+    params={"action": "start"},
+    fields=[
+        AgentMethodField(
+            name="How many cases to run",
+            type=int,
+            field_type="IntegerField",
+            required=True,
+        )
+    ],
+)
+human_loop_job_stop = AgentMethod(
+    name="stop",
+    method="agent_human_loop.job_stop",
+    is_async=False,
+    params={"action": "stop"},
+    description="Stop the running job",
+)
+human_loop_job_status = AgentMethod(
+    name="status",
+    method="agent_human_loop.job_status",
+    is_async=False,
+    params={"action": "status"},
+    description="Get the status of the agent",
+)
+human_loop_human_answer = AgentMethod(
+    name="human_answer",
+    method="agent_human_loop.handle_human_input",
+    is_async=False,
+    fields=[],
+)
+
+human_loop_agent: Agent = Agent(
+    name=human_loop_agent_name,
+    id=shortuuid.uuid(human_loop_agent_name),
+    author="Alain Prasquier <al1@supervaize.com>",
+    version="1.0",
+    description="Runs cases with a human approval step before each case completes.",
+    tags=["hello world", "human in the loop", "approval"],
+    methods=AgentMethods(
+        job_start=human_loop_job_start,
+        job_stop=human_loop_job_stop,
+        job_status=human_loop_job_status,
+        human_answer=human_loop_human_answer,
+    ),
+)
+
+
 # Always provide a default value to prevent error.
 # Get from app.supervaize.com
 supervaize_account: Account = Account(
@@ -96,7 +150,7 @@ supervaize_account: Account = Account(
 
 # Define the supervaizer server capabilities
 sv_server: Server = Server(
-    agents=[simple_agent],  # [simple_agent, email_agent]
+    agents=[simple_agent, human_loop_agent],
     a2a_endpoints=True,  # Enable A2A endpoints
     supervisor_account=supervaize_account,  # Account from Supervaize
 )
