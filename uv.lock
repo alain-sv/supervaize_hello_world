@@ -686,7 +686,7 @@ wheels = [
 
 [[package]]
 name = "supervaize-hello-world"
-version = "0.1.2"
+version = "0.2.2"
 source = { virtual = "." }
 dependencies = [
     { name = "fastapi" },

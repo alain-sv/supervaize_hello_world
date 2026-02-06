@@ -26,13 +26,14 @@ supervaize_hello_world/
 
 - Python 3.12 or higher
 - [uv](https://docs.astral.sh/uv/) package manager (recommended) or pip
+- An account at [supervaize](app.supervaize.com)
 
 ## Getting Started
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/alain-sv/supervaize_hello_world.git
+git clone https://github.com/supervaize/supervaize_hello_world.git
 cd supervaize_hello_world
 ```
 
