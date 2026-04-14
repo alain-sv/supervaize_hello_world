@@ -33,3 +33,11 @@ local_url:
 
 local_start:
     SUPERVAIZER_HOST=0.0.0.0 SUPERVAIZER_PORT=3000 SUPERVAIZE_API_KEY=$SUPERVAIZE_API_KEY_LOCAL SUPERVAIZE_WORKSPACE_ID=odm SUPERVAIZE_API_URL=$SUPERVAIZE_API_URL_LOCAL SUPERVAIZER_PUBLIC_URL=$SUPERVAIZER_PUBLIC_URL_LOCAL supervaizer start
+
+# Run all tests
+test:
+    uv run pytest tests/ -v
+
+# Run a specific test
+test-one test_name:
+    uv run pytest tests/ -k "{{test_name}}" -v
