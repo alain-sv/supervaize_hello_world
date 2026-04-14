@@ -20,6 +20,7 @@ from supervaizer import (
     ParametersSetup,
     Parameter,
 )
+from agent_data_resource import contacts_resource
 
 #### SIMPLE AGENT ####
 agent_name = "Hello World AI Agent"
@@ -83,6 +84,7 @@ simple_agent: Agent = Agent(
         job_status=job_status_method,
     ),
     parameters_setup=simple_agent_parameters,
+    data_resources=[contacts_resource],
 )
 
 
