@@ -73,6 +73,20 @@ Once running, you can access:
 | `http://localhost:8000/.well-known/agents.json` | A2A Agent Discovery |
 | `http://localhost:8000/.well-known/health` | Health Check |
 
+## Data Resources
+
+The `simple_agent` now exposes a **Contacts** data resource via the Supervaizer SDK. Studio renders it as a generic CRUD table — no per-agent UI code required.
+
+The in-memory contacts store (`agent_data_resource.py`) demonstrates the full DataResource pattern:
+- `on_list` / `on_get` — read operations
+- `on_create` / `on_update` / `on_delete` — write operations
+- `on_import` — bulk CSV import (enabled via `importable=True`)
+
+Run E2E tests with:
+```bash
+just test
+```
+
 ## Testing the Agent
 
 ```bash
