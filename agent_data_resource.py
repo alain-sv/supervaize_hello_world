@@ -7,8 +7,6 @@ a generic CRUD table without any agent-specific UI code.
 The in-memory store is intentionally simple — it resets on server restart.
 Real agents would use a database repository instead of the dict below.
 """
-from __future__ import annotations
-
 import uuid
 from typing import Any
 
@@ -34,7 +32,9 @@ def _get_contact(contact_id: str) -> dict[str, Any] | None:
 
 def _create_contact(data: dict[str, Any]) -> dict[str, Any]:
     contact_id = str(uuid.uuid4())[:8]
-    contact = {**data, "id": contact_id}
+    # Always generate a server-side id; ignore any id supplied in the payload.
+    contact = {k: v for k, v in data.items() if k != "id"}
+    contact["id"] = contact_id
     _contacts[contact_id] = contact
     return contact
 
@@ -54,12 +54,10 @@ def _delete_contact(contact_id: str) -> bool:
 
 
 def _import_contacts(records: list[dict[str, Any]]) -> dict[str, Any]:
-    created = 0
     for record in records:
         contact_id = str(uuid.uuid4())[:8]
         _contacts[contact_id] = {**record, "id": contact_id}
-        created += 1
-    return {"created": created, "total": len(_contacts)}
+    return {"created": len(records), "total": len(_contacts)}
 
 
 # ---------------------------------------------------------------------------
