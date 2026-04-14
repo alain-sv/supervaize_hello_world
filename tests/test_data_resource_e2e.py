@@ -48,21 +48,24 @@ def test_create_contact(client):
 
 
 def test_create_contact_appears_in_list(client):
-    """Contact created via POST appears in subsequent GET list."""
+    """Contact created via POST appears in subsequent GET list (total = 3)."""
     client.post(f"{BASE}/", json={"first_name": "Dave", "email": "dave@example.com"})
     resp = client.get(f"{BASE}/")
-    emails = {c["email"] for c in resp.json()}
+    contacts = resp.json()
+    assert len(contacts) == 3  # 2 seeded + 1 created
+    emails = {c["email"] for c in contacts}
     assert "dave@example.com" in emails
 
 
 def test_update_contact(client):
-    """PUT /data/contacts/{id} updates the contact."""
+    """PUT /data/contacts/{id} merges fields — unchanged fields are preserved."""
     resp = client.put(f"{BASE}/c1", json={"first_name": "Alicia", "city": "Lyon"})
     assert resp.status_code == 200
     updated = resp.json()
     assert updated["first_name"] == "Alicia"
     assert updated["city"] == "Lyon"
     assert updated["id"] == "c1"  # id must not change
+    assert updated["email"] == "alice@example.com"  # unchanged fields preserved
 
 
 def test_update_contact_not_found(client):
@@ -97,9 +100,11 @@ def test_bulk_import(client):
     result = resp.json()
     assert result["created"] == 2
 
-    # Verify they appear in list
+    # Verify they appear in list (2 seeded + 2 imported = 4 total)
     list_resp = client.get(f"{BASE}/")
-    emails = {c["email"] for c in list_resp.json()}
+    all_contacts = list_resp.json()
+    assert len(all_contacts) == 4
+    emails = {c["email"] for c in all_contacts}
     assert "eve@example.com" in emails
     assert "frank@example.com" in emails
 
