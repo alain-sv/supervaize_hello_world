@@ -1,16 +1,57 @@
-# Justfile 
+# Justfile
+set dotenv-load := true
+set dotenv-filename := ".env"
+
 default:
     @just --list
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Dependencies
+# ─────────────────────────────────────────────────────────────────────────────
 
-uv-sync:
+# Install dependencies
+install:
     uv sync
 
-# Sync deps then overlay local supervaizer (dev only). Prod: just uv sync.
-uv-sync-dev:
-    uv sync && uv pip install -e ../supervaizer
+# Install dev dependencies
+install-dev:
+    uv sync --extra dev
 
-# Send the environment variables to Vercel 
+# After install-dev: use editable supervaizer from monorepo checkout (not for CI; path is relative to supervaize_hello_world/)
+use-local-supervaizer:
+    uv pip install -e ../supervaizer
+
+# Dev deps + local editable supervaizer
+install-dev-local:
+    uv sync --extra dev
+    just use-local-supervaizer
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Server
+# ─────────────────────────────────────────────────────────────────────────────
+
+start:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    supervaizer start --port 3000 --local
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Testing
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Run all tests
+test:
+    uv run pytest tests/ -v
+
+# Run a specific test
+test-one test_name:
+    uv run pytest tests/ -k "{{test_name}}" -v
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Vercel
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Send the environment variables to Vercel
 vercel_add_env:
     echo $SUPERVAIZE_API_URL | vercel env add SUPERVAIZE_API_URL production --force
     echo $SUPERVAIZE_API_KEY | vercel env add SUPERVAIZE_API_KEY production --sensitive --force
@@ -27,17 +68,3 @@ vercel_redeploy:
 vercel_dev:
     vercel dev
 
-
-local_url:
-    lt --port 3000 --subdomain supervaize-hello-world
-
-local_start:
-    SUPERVAIZER_HOST=0.0.0.0 SUPERVAIZER_PORT=3000 SUPERVAIZE_API_KEY=$SUPERVAIZE_API_KEY_LOCAL SUPERVAIZE_WORKSPACE_ID=odm SUPERVAIZE_API_URL=$SUPERVAIZE_API_URL_LOCAL SUPERVAIZER_PUBLIC_URL=$SUPERVAIZER_PUBLIC_URL_LOCAL supervaizer start
-
-# Run all tests
-test:
-    uv run pytest tests/ -v
-
-# Run a specific test
-test-one test_name:
-    uv run pytest tests/ -k "{{test_name}}" -v

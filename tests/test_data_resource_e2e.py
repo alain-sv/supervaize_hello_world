@@ -6,7 +6,7 @@ list → get → create → update → delete → import
 All without a real network — TestClient exercises the actual route handlers.
 """
 
-BASE = "/supervaizer/agents/hello-world-ai-agent/data/contacts"
+BASE = "/api/agents/hello-world-ai-agent/data/contacts"
 
 
 def test_list_contacts_returns_two_seeded_contacts(client):
@@ -38,7 +38,11 @@ def test_get_contact_not_found(client):
 
 def test_create_contact(client):
     """POST /data/contacts/ creates a new contact and returns it with an id."""
-    payload = {"first_name": "Carol", "last_name": "White", "email": "carol@example.com"}
+    payload = {
+        "first_name": "Carol",
+        "last_name": "White",
+        "email": "carol@example.com",
+    }
     resp = client.post(f"{BASE}/", json=payload)
     assert resp.status_code == 201
     created = resp.json()
@@ -112,6 +116,7 @@ def test_bulk_import(client):
 def test_unauthenticated_request_rejected():
     """Requests without API key are rejected."""
     from fastapi.testclient import TestClient
+
     from supervaizer_control import sv_server
 
     unauth = TestClient(sv_server.app)

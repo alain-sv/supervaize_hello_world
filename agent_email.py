@@ -33,7 +33,7 @@ from supervaizer.account import Account
 # Use loca.lt or ngrok to get a public url during development.
 # This can be setup from environment variables.
 # SUPERVAIZER_HOST and SUPERVAIZER_PORT
-DEV_PUBLIC_URL = "https://myagent-dev.loca.lt"
+DEV_PUBLIC_URL = os.getenv("SUPERVAIZE_PUBLIC_URL_LOCAL")
 # Public url of your hosted agent
 PROD_PUBLIC_URL = os.getenv("SUPERVAIZE_PUBLIC_URL")
 
@@ -315,7 +315,6 @@ def resume_case_with_human_input(case_id: str, job_id: str, **kwargs):
     case = Case.resume(id=case_id, job_id=job_id, account=supervaize_account)
 
     case.close()
-    return
 
 
 def email_agent(supervaize_account: Account, agent_name="Email Agent") -> Agent:

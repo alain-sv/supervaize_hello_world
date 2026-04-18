@@ -222,3 +222,4 @@ AGENTS*.md
 
 # uv local dev overrides (use local supervaizer etc.)
 uv.toml
+.gitnexus
