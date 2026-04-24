@@ -138,3 +138,30 @@ def test_agent_registration_info_includes_contacts_resource():
     assert contacts_info["read_only"] is False
     assert contacts_info["operations"]["create"] is True
     assert contacts_info["operations"]["import"] is True
+
+    email_field = next(field for field in contacts_info["fields"] if field["name"] == "email")
+    assert email_field["sensitive"] is True
+
+
+def test_controller_contract_endpoint_advertises_required_templates(client):
+    """GET /api/supervaizer/contract publishes the SDK controller contract."""
+    from supervaizer.contracts import ControllerEndpoint
+
+    resp = client.get("/api/supervaizer/contract")
+    assert resp.status_code == 200
+    contract = resp.json()
+
+    assert contract["controller_contract_version"] == "1.0"
+    assert contract["api_base_path"] == "/api"
+    endpoints = contract["endpoints"]
+    for endpoint in [
+        ControllerEndpoint.POST_AGENT_JOB_START,
+        ControllerEndpoint.POST_AGENT_JOB_START_DYNAMIC_CHOICES,
+        ControllerEndpoint.POST_AGENT_CASE_UPDATE,
+        ControllerEndpoint.DATA_RESOURCE,
+        ControllerEndpoint.DATA_RESOURCE_ITEM,
+        ControllerEndpoint.DATA_RESOURCE_IMPORT,
+        ControllerEndpoint.HEALTH_CHECK,
+        ControllerEndpoint.CONTROLLER_CONTRACT,
+    ]:
+        assert endpoint.value in endpoints
