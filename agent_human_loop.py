@@ -25,7 +25,7 @@ def custom_case_start(case_id: str, job_id: str, **kwargs):
     kwargs["case_id"] = case_id
     random_sleep = random.uniform(0, 5)
     random_cost = random.uniform(0, 10)
-    case = Case.start(
+    case = Case.start_sync(
         job_id=job_id,
         account=supervaize_account,
         name=f"Case {case_id}",
@@ -35,7 +35,7 @@ def custom_case_start(case_id: str, job_id: str, **kwargs):
 
     sleep(random_sleep)
 
-    case.update(
+    case.update_sync(
         CaseNodeUpdate(
             name=f"Update Case {case_id}",
             cost=random_cost,
@@ -47,7 +47,7 @@ def custom_case_start(case_id: str, job_id: str, **kwargs):
     )
 
     # Human-in-the-loop: every case asks for approval before completing
-    case.request_human_input(
+    case.request_human_input_sync(
         CaseNodeUpdate(
             name="Human approval",
             cost=0.0,
@@ -110,7 +110,7 @@ def handle_human_input(**kwargs) -> JobResponse:
     approved = fields.get("Approved") is True
     rejected = fields.get("Rejected") is True
     if approved and not rejected:
-        case.update(
+        case.update_sync(
             CaseNodeUpdate(
                 name="✅ Human approved",
                 cost=0.0,
@@ -118,12 +118,12 @@ def handle_human_input(**kwargs) -> JobResponse:
                 is_final=False,
             )
         )
-        case.close(
+        case.close_sync(
             case_result={"message": "Case Completed", "status": "approved"},
             final_cost=cost_so_far,
         )
     else:
-        case.update(
+        case.update_sync(
             CaseNodeUpdate(
                 name="❌ Human rejected",
                 cost=0.0,
@@ -131,7 +131,7 @@ def handle_human_input(**kwargs) -> JobResponse:
                 is_final=False,
             )
         )
-        case.close(
+        case.close_sync(
             case_result={"message": "Case rejected", "status": "rejected"},
             final_cost=cost_so_far,
         )
