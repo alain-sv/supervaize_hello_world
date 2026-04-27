@@ -80,7 +80,7 @@ contacts_resource = DataResource(
         ),
         DataResourceField(name="first_name", field_type=FieldType.STRING, label="First Name", required=True),
         DataResourceField(name="last_name", field_type=FieldType.STRING, label="Last Name"),
-        DataResourceField(name="email", field_type=FieldType.EMAIL, label="Email"),
+        DataResourceField(name="email", field_type=FieldType.EMAIL, label="Email", sensitive=True),
         DataResourceField(name="city", field_type=FieldType.STRING, label="City"),
     ],
     on_list=_list_contacts,

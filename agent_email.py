@@ -284,17 +284,16 @@ def custom_case_start(case_id: str, job_id: str, **kwargs):
     kwargs["case_id"] = case_id
     random_sleep = random.uniform(0, 5)
     random_cost = random.uniform(0, 10)
-    case = Case.start(
+    case = Case.start_sync(
         job_id=job_id,
         account=supervaize_account,
         name=f"Case {case_id}",
         description=f"case {case_id} in job {job_id} - random sleep {random_sleep} - random cost {random_cost}",
-        nodes=nodes,
     )
 
     sleep(random_sleep)
 
-    case.update(
+    case.update_sync(
         CaseNodeUpdate(
             name=f"Update Case {case_id}",
             cost=random_cost,
@@ -305,7 +304,7 @@ def custom_case_start(case_id: str, job_id: str, **kwargs):
         )
     )
 
-    case.close(case_result={"message": "Case Completed"})
+    case.close_sync(case_result={"message": "Case Completed"})
 
     logger.info(f"AGENT ExampleAgent: Case id {case_id} finished")
     return case
@@ -314,7 +313,7 @@ def custom_case_start(case_id: str, job_id: str, **kwargs):
 def resume_case_with_human_input(case_id: str, job_id: str, **kwargs):
     case = Case.resume(id=case_id, job_id=job_id, account=supervaize_account)
 
-    case.close()
+    case.close_sync(case_result={})
 
 
 def email_agent(supervaize_account: Account, agent_name="Email Agent") -> Agent:
